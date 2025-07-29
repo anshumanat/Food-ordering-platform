@@ -61,7 +61,7 @@ const removeFromCart = (index) => {
     <>
       <Navbar cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)} />
       <div className="p-4">
-        <h1 className="text-3xl font-bold mb-4">Menu</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Menu</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {menu.map((item) => (
             <MenuItemCard key={item.id} item={item} onAdd={addToCart} />
