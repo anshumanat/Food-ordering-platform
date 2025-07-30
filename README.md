@@ -33,11 +33,13 @@ A full-stack food ordering platform with real-time order tracking, built with:
 
 ## 🗓️ Progress
 
-| Day  | Task                      | Status  |
-|------|---------------------------|---------|
-| Day 1 | Frontend scaffold         | ✅ Done |
-| Day 2 | Menu, cart, sidebar       | ✅ Done |
-| Day 3 | Checkout form & validation| 🔜 Next |
+| Day   | Task                          | Status         |
+|-------|-------------------------------|----------------|
+| Day 1 | Frontend scaffold             | ✅ Done         |
+| Day 2 | Menu, cart, sidebar           | ✅ Done         |
+| Day 3 | Checkout form & validation    | ✅ Done         |
+| Day 4 | Backend scaffold & DB setup   | ✅ Done         |
+| Day 5 | Core RPC methods              |  In Progress     |
 
 ---
 
