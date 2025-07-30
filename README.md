@@ -19,6 +19,9 @@ A full-stack food ordering platform with real-time order tracking, built with:
 - 🛒 Cart preview sidebar with animation
 - 📦 Cart page with clear cart & total
 - 🔁 Local storage cart persistence
+- 🧠 Dynamic menu loaded from PostgreSQL via JSON-RPC
+- 🧪 `getMenu` RPC tested successfully via Postman
+- 🧰 Express backend with connected PostgreSQL DB
 
 ---
 
@@ -45,9 +48,16 @@ A full-stack food ordering platform with real-time order tracking, built with:
 
 ## 🚀 Getting Started
 
-### Frontend
+### Frontend And Backend
 
 ```bash
 cd frontend
 npm install
 npm run dev
+
+
+cd backend
+npm install
+npx knex migrate:latest
+npm run dev
+
