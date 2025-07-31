@@ -20,8 +20,9 @@ A full-stack food ordering platform with real-time order tracking, built with:
 - 📦 Cart page with clear cart & total
 - 🔁 Local storage cart persistence
 - 🧠 Dynamic menu loaded from PostgreSQL via JSON-RPC
-- 🧪 `getMenu` RPC tested successfully via Postman
-- 🧰 Express backend with connected PostgreSQL DB
+- 🧾 placeOrder & listOrders RPC methods implemented**
+- 🧪 Tested RPCs (`getMenu`, `placeOrder`, `listOrders`) using Postman
+- 🧰 Express backend with connected PostgreSQL DB and migrations
 
 ---
 
@@ -42,7 +43,8 @@ A full-stack food ordering platform with real-time order tracking, built with:
 | Day 2 | Menu, cart, sidebar           | ✅ Done         |
 | Day 3 | Checkout form & validation    | ✅ Done         |
 | Day 4 | Backend scaffold & DB setup   | ✅ Done         |
-| Day 5 | Core RPC methods              |  In Progress     |
+| Day 5 | Core RPC methods              | ✅ Done         |
+| Day 6 |                               | In Progress      |
 
 ---
 
