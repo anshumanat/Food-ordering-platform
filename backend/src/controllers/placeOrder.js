@@ -1,12 +1,12 @@
 const db = require('../db');
 
-//tested via postman
-module.exports = async function placeOrder(params) {
+module.exports = (wss) => async function placeOrder(params) {
   const { name, email, address, cart } = params;
 
+  // Insert into orders
   const [orderRow] = await db('orders')
     .insert({ name, email, address })
-    .returning('id');
+    .returning(['id', 'created_at', 'status']);
 
   const orderId = typeof orderRow === 'object' ? orderRow.id : orderRow;
 
@@ -19,14 +19,28 @@ module.exports = async function placeOrder(params) {
 
   await db('order_items').insert(items);
 
-  return {
-    orderId,
+  const fullOrder = {
+    id: orderId,
     name,
     email,
     address,
+    status: orderRow.status || 'pending',
+    created_at: orderRow.created_at || new Date().toISOString(),
     items: cart,
-    created_at: new Date().toISOString()
   };
+
+  //  Emit WebSocket event to all connected clients
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(JSON.stringify({
+        type: 'order_created',
+        order: fullOrder
+      }));
+    }
+  });
+
+  return fullOrder;
 };
+
 
 

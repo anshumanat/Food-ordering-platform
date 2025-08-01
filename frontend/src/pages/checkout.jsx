@@ -27,20 +27,51 @@ export default function CheckoutPage() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const validationErrors = validate();
+  setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length === 0) {
-      setLoading(true);
-      setTimeout(() => {
+  if (Object.keys(validationErrors).length === 0) {
+    setLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:4000/rpc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'placeOrder',
+          params: {
+            name: form.name,
+            email: form.email,
+            address: form.address,
+            cart,
+          },
+          id: 1,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (json.result?.id) {
         toast.success('🎉 Order placed successfully!');
         localStorage.removeItem('cart');
-        navigate('/confirmation');
-      }, 1200); // Simulate delay
+        navigate('/confirmation', {
+          state: { orderId: json.result.id },
+        });
+      } else {
+        toast.error('❌ Failed to place order.');
+      }
+    } catch (err) {
+      console.error('Place order error:', err);
+      toast.error('Something went wrong.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
+
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);

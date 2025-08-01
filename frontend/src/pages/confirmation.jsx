@@ -1,9 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const orderId = location.state?.orderId;
 
   return (
     <>
@@ -23,8 +25,9 @@ export default function ConfirmationPage() {
           </button>
 
           <button
-            onClick={() => navigate('/tracker/123')}
+            onClick={() => navigate(`/tracker/${orderId}`)}
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded"
+            disabled={!orderId}
           >
             Track Order
           </button>
@@ -33,3 +36,4 @@ export default function ConfirmationPage() {
     </>
   );
 }
+
