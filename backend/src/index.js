@@ -9,6 +9,7 @@ const placeOrderFactory = require('./controllers/placeOrder');
 const listOrders = require('./controllers/listOrders');
 const updateOrderStatusFactory = require('./controllers/updateOrderStatus');
 const getOrderStatus = require('./controllers/getOrderStatus');
+const acceptOrderFactory = require('./controllers/acceptOrder');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -64,7 +65,10 @@ app.post('/rpc', async (req, res) => {
       case 'getOrderStatus':
         result = await getOrderStatus(params);
         break;
-        
+      case 'acceptOrder':
+        result = await acceptOrderFactory(wss)(params);
+        break;
+
       default:
         return res.status(400).json({
           jsonrpc: '2.0',
