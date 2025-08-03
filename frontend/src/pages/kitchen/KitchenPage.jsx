@@ -92,12 +92,20 @@ export default function KitchenPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold">🍳 Kitchen Dashboard</h2>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-        >
-          Logout
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate('/analytics')}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+          >
+            🔍 Analytics
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+          >
+            🔒 Logout
+          </button>
+        </div>
       </div>
 
       {orders.length === 0 ? (
@@ -159,6 +167,7 @@ export default function KitchenPage() {
     </div>
   );
 }
+
 
 
 

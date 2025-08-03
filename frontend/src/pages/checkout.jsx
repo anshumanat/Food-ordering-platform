@@ -55,10 +55,27 @@ const handleSubmit = async (e) => {
       const json = await res.json();
 
       if (json.result?.id) {
-        toast.success('🎉 Order placed successfully!');
+        const orderId = json.result.id;
+
+        // Simulate confirmPayment after order placement
+        await fetch('http://localhost:4000/rpc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'confirmPayment',
+            params: {
+              orderId,
+              paymentRef: `demo_payment_${Date.now()}`, // Simulated ref
+            },
+            id: 2,
+          }),
+        });
+
+        toast.success('🎉 Order placed and payment confirmed!');
         localStorage.removeItem('cart');
         navigate('/confirmation', {
-          state: { orderId: json.result.id },
+          state: { orderId },
         });
       } else {
         toast.error('❌ Failed to place order.');

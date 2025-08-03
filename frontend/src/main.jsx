@@ -9,6 +9,7 @@ import ConfirmationPage from './pages/confirmation';
 import TrackerPage from './pages/tracker/[id]';
 import AdminLogin from './pages/AdminLogin';
 import KitchenPage from './pages/kitchen/KitchenPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import './styles/tailwind.css';
 
 const container = document.getElementById('root');
@@ -24,6 +25,7 @@ if (container) {
           <Route path="/tracker/:id" element={<TrackerPage />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/kitchen" element={<KitchenPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
