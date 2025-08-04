@@ -32,7 +32,18 @@ wss.on('connection', (ws) => {
   console.log('📡 WebSocket client connected');
 
   ws.on('message', (msg) => {
-    console.log('💬 Message from client:', msg.toString());
+    try {
+      const data = JSON.parse(msg.toString());
+      console.log('💬 Message from client:', data);
+
+      if (data.type === 'ping') {
+        ws.send(JSON.stringify({ type: 'pong' }));
+      }
+
+
+    } catch (err) {
+      console.error('❌ Invalid WebSocket message:', msg.toString());
+    }
   });
 
   ws.send(JSON.stringify({
@@ -41,11 +52,11 @@ wss.on('connection', (ws) => {
   }));
 });
 
+
 // Inject wss into RPC handler factories
 const placeOrder = placeOrderFactory(wss);
 const updateOrderStatus = updateOrderStatusFactory(wss);
 
-// JSON-RPC 2.0 handler
 app.post('/rpc', async (req, res) => {
   const { method, params, id } = req.body;
 
@@ -78,21 +89,29 @@ app.post('/rpc', async (req, res) => {
         result = await getAnalytics(params);
         break;
 
-
       default:
-        return res.status(400).json({
+        return res.json({
           jsonrpc: '2.0',
-          error: { code: -32601, message: 'Method not found' },
+          error: {
+            code: -32601,
+            message: `Method '${method}' not found`,
+          },
           id,
         });
     }
 
-    res.json({ jsonrpc: '2.0', result, id });
+    return res.json({ jsonrpc: '2.0', result, id });
+
   } catch (err) {
     console.error('❌ RPC error:', err);
-    res.status(500).json({
+
+    return res.json({
       jsonrpc: '2.0',
-      error: { code: -32000, message: 'Internal server error' },
+      error: {
+        code: err.code || -32000,
+        message: err.message || 'Internal server error',
+        data: err.data || null,
+      },
       id,
     });
   }

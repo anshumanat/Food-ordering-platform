@@ -8,7 +8,7 @@ export default function CartPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem('cart');
-    if (stored) setCart(JSON.parse(stored));
+    if (stored) setCart(JSON.parse(stored) || []);
   }, []);
 
   const removeFromCart = (index) => {
@@ -36,37 +36,44 @@ export default function CartPage() {
   return (
     <>
       <Navbar cartCount={itemCount} />
-      <div className="p-6 px-4 max-w-2xl sm:max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-4">🛒 Your Cart</h2>
+      <div className="p-6 px-4 max-w-2xl sm:max-w-xl mx-auto">
+        <h2 className="text-3xl font-bold text-blue-700 mb-6 text-center">🛒 Your Cart</h2>
 
         {cart.length === 0 ? (
-          <div className="text-center mt-12">
-            <p className="text-gray-600 mb-4">Your cart is currently empty.</p>
+          <div className="text-center mt-16">
+            <p className="text-gray-500 text-lg mb-4">Your cart is currently empty.</p>
             <button
               onClick={() => navigate('/')}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow transition"
             >
-              Browse Menu
+              🍽️ Browse Menu
             </button>
           </div>
         ) : (
           <>
-            <ul className="space-y-4">
+            <ul className="space-y-5">
               {cart.map((item, index) => (
                 <li
                   key={index}
-                  className="flex justify-between items-center border-b pb-3"
+                  className="flex items-center justify-between gap-4 border-b pb-4"
                 >
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-gray-600">
-                      ${item.price.toFixed(2)} × {item.quantity}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={item.image_url || '/placeholder.jpg'}
+                      alt={item.name}
+                      className="w-16 h-16 rounded-md object-cover border"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-800">{item.name}</p>
+                      <p className="text-sm text-gray-600">
+                        ${item.price.toFixed(2)} × {item.quantity}
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => removeFromCart(index)}
-                    className="text-red-500 hover:text-red-700 text-lg"
-                    title="Remove one item"
+                    className="text-red-500 hover:text-red-700 text-xl transition"
+                    title="Remove one"
                   >
                     ✕
                   </button>
@@ -74,35 +81,35 @@ export default function CartPage() {
               ))}
             </ul>
 
-            <hr className="my-4" />
+            <hr className="my-6" />
 
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-lg font-bold">Total: ${total.toFixed(2)}</p>
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-xl font-semibold text-gray-800">
+                Total: <span className="text-blue-600">${total.toFixed(2)}</span>
+              </p>
               <span className="text-sm text-gray-500">
-                {itemCount} item{itemCount > 1 ? 's' : ''}
+                {itemCount} item{itemCount !== 1 ? 's' : ''}
               </span>
             </div>
 
-            
-
-            <div className="flex flex-wrap gap-3 justify-between sm:justify-end">
+            <div className="flex flex-wrap gap-3 justify-end">
               <button
                 onClick={clearCart}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow transition"
               >
-                Clear Cart
+                🗑️ Clear Cart
               </button>
               <button
                 onClick={() => navigate('/')}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition"
               >
-                Continue Shopping
+                🔙 Continue Shopping
               </button>
               <button
                 onClick={() => navigate('/checkout')}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow transition"
               >
-                Proceed to Checkout
+                ✅ Proceed to Checkout
               </button>
             </div>
           </>

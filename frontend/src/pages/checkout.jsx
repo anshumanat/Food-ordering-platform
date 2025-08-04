@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { rpcCall } from '../utils/rpcClient';
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
@@ -27,68 +28,47 @@ export default function CheckoutPage() {
     return errs;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const validationErrors = validate();
-  setErrors(validationErrors);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    setErrors(validationErrors);
 
-  if (Object.keys(validationErrors).length === 0) {
-    setLoading(true);
+    if (Object.keys(validationErrors).length === 0) {
+      setLoading(true);
 
-    try {
-      const res = await fetch('http://localhost:4000/rpc', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'placeOrder',
-          params: {
-            name: form.name,
-            email: form.email,
-            address: form.address,
-            cart,
-          },
-          id: 1,
-        }),
-      });
-
-      const json = await res.json();
-
-      if (json.result?.id) {
-        const orderId = json.result.id;
-
-        // Simulate confirmPayment after order placement
-        await fetch('http://localhost:4000/rpc', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'confirmPayment',
-            params: {
-              orderId,
-              paymentRef: `demo_payment_${Date.now()}`, // Simulated ref
-            },
-            id: 2,
-          }),
+      try {
+        const order = await rpcCall('placeOrder', {
+          name: form.name,
+          email: form.email,
+          address: form.address,
+          cart,
         });
 
-        toast.success('🎉 Order placed and payment confirmed!');
-        localStorage.removeItem('cart');
-        navigate('/confirmation', {
-          state: { orderId },
-        });
-      } else {
-        toast.error('❌ Failed to place order.');
+        if (order?.id) {
+          await rpcCall('confirmPayment', {
+            orderId: order.id,
+            paymentRef: `demo_payment_${Date.now()}`,
+          });
+
+          toast.success('🎉 Order placed and payment confirmed!');
+          localStorage.removeItem('cart');
+          localStorage.setItem('last_order_id', order.id);
+          window.dispatchEvent(new Event('orderPlaced'));
+
+          navigate('/confirmation', {
+            state: { orderId: order.id },
+          });
+        } else {
+          toast.error('❌ Failed to place order.');
+        }
+      } catch (err) {
+        console.error('Place order error:', err);
+        toast.error('Something went wrong.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Place order error:', err);
-      toast.error('Something went wrong.');
-    } finally {
-      setLoading(false);
     }
-  }
-};
-
+  };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -96,67 +76,80 @@ const handleSubmit = async (e) => {
   return (
     <>
       <Navbar cartCount={itemCount} />
-     <div className="max-w-2xl sm:max-w-md mx-auto p-6 px-4">
-        <h2 className="text-2xl font-bold mb-4">Checkout</h2>
+
+      <div className="max-w-2xl mx-auto p-6">
+        <h2 className="text-3xl font-bold mb-6 text-center">🧾 Checkout</h2>
 
         {cart.length === 0 ? (
-          <p className="text-gray-600">🛒 Your cart is empty.</p>
+          <p className="text-center text-gray-500">Your cart is currently empty.</p>
         ) : (
           <>
-            <ul className="text-sm text-gray-700 mb-4">
+            {/* Cart Items */}
+            <ul className="space-y-4 mb-6">
               {cart.map((item) => (
-                <li key={item.id} className="flex justify-between">
-                  <span>{item.name} × {item.quantity}</span>
-                  <span>${(item.price * item.quantity).toFixed(2)}</span>
+                <li key={item.id} className="flex items-center justify-between gap-4 border-b pb-2">
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className="w-14 h-14 rounded object-cover"
+                  />
+                  <div className="flex-1">
+                    <p className="font-semibold">{item.name}</p>
+                    <p className="text-sm text-gray-600">
+                      ${item.price.toFixed(2)} × {item.quantity}
+                    </p>
+                  </div>
+                  <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
                 </li>
               ))}
             </ul>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block font-medium">Name</label>
+                <label className="block font-medium mb-1">Name</label>
                 <input
                   type="text"
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
               </div>
 
               <div>
-                <label className="block font-medium">Email</label>
+                <label className="block font-medium mb-1">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
               </div>
 
               <div>
-                <label className="block font-medium">Address</label>
+                <label className="block font-medium mb-1">Address</label>
                 <textarea
                   name="address"
                   value={form.address}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  rows={3}
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
               </div>
 
-              <hr className="my-4" />
-              <div className="text-right font-semibold">
-                Total: ${total.toFixed(2)}
+              <div className="flex justify-between items-center pt-4 border-t mt-4">
+                <span className="text-lg font-bold">Total: ${total.toFixed(2)}</span>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-2 rounded text-white ${
+                className={`w-full py-2 rounded text-white font-medium transition ${
                   loading
                     ? 'bg-blue-300 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600'
@@ -171,3 +164,5 @@ const handleSubmit = async (e) => {
     </>
   );
 }
+
+

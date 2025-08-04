@@ -14,7 +14,7 @@ module.exports = (wss) => async function placeOrder(params) {
       name,
       email,
       address,
-      total_amount: totalAmount,   // ✅ Add this
+      total_amount: totalAmount,   // Add this
       status: 'pending',
       created_at: new Date()
     })

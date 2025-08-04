@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
+import { rpcCall } from '../../utils/rpcClient';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 const STAGES = [
   { key: 'pending', label: 'Pending', icon: '🕐' },
@@ -14,49 +16,33 @@ export default function TrackerPage() {
   const [status, setStatus] = useState('pending');
   const [paymentRef, setPaymentRef] = useState(null);
 
+  // Fetch initial status
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4000/ws');
-
-    // Fallback initial fetch
-    fetch('http://localhost:4000/rpc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'getOrderStatus',
-        params: { orderId: Number(id) },
-        id: 1
-      }),
-    })
-      .then((res) => res.json())
+    rpcCall('getOrderStatus', { orderId: Number(id) })
       .then((data) => {
-        if (data.result?.status) {
-          setStatus(data.result.status);
-          setPaymentRef(data.result.payment_ref || '');
+        if (data?.status) {
+          setStatus(data.status);
+          setPaymentRef(data.payment_ref || null);
         }
-        
       })
       .catch((err) => {
         console.error('Failed to fetch order status:', err);
       });
-
-    ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
-
-     if (msg.type === 'order_updated' && msg.order.id == id) {
-       setStatus(msg.order.status);
-       setPaymentRef(msg.order.payment_ref || '');
-     }
-     
-     if (msg.type === 'order_created' && msg.order.id == id) {
-       setStatus(msg.order.status || 'pending');
-       setPaymentRef(msg.order.payment_ref || '');
-     }
-     
-    };
-
-    return () => ws.close();
   }, [id]);
+
+  //  WebSocket real-time updates
+  useWebSocket('ws://localhost:4000/ws', {
+    onMessage: (event) => {
+      const msg = JSON.parse(event.data);
+      if (
+        (msg.type === 'order_updated' || msg.type === 'order_created') &&
+        msg.order.id == id
+      ) {
+        setStatus(msg.order.status || 'pending');
+        setPaymentRef(msg.order.payment_ref || null);
+      }
+    }
+  });
 
   const currentIndex = STAGES.findIndex((s) => s.key === status);
 
@@ -65,7 +51,7 @@ export default function TrackerPage() {
       <Navbar cartCount={0} />
       <div className="p-6 max-w-2xl mx-auto text-center">
         <h2 className="text-2xl font-bold mb-4">📦 Tracking Order #{id}</h2>
-        
+
         <p className="text-lg text-blue-600 font-semibold mb-2">
           Current Status: {status.replace(/_/g, ' ')}
         </p>
@@ -82,14 +68,15 @@ export default function TrackerPage() {
             const isCurrent = currentIndex === idx;
 
             return (
-              <div key={stage.key} className="flex-1 flex flex-col items-center relative min-w-[70px]">
+              <div
+                key={stage.key}
+                className="flex-1 flex flex-col items-center relative min-w-[70px]"
+              >
                 <div
-                  className={`
-                    w-10 h-10 rounded-full flex items-center justify-center
+                  className={`w-10 h-10 rounded-full flex items-center justify-center
                     text-xl font-bold z-10
                     ${isActive ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}
-                    ${isCurrent ? 'animate-pulse' : ''}
-                  `}
+                    ${isCurrent ? 'animate-pulse' : ''}`}
                   title={stage.label}
                 >
                   {stage.icon}
@@ -101,12 +88,10 @@ export default function TrackerPage() {
 
                 {idx < STAGES.length - 1 && (
                   <div
-                    className={`
-                      absolute top-4 left-1/2 w-full h-1 
+                    className={`absolute top-4 left-1/2 w-full h-1 
                       transform translate-x-4
                       z-0 transition-all duration-300
-                      ${currentIndex > idx ? 'bg-blue-400' : 'bg-gray-300'}
-                    `}
+                      ${currentIndex > idx ? 'bg-blue-400' : 'bg-gray-300'}`}
                     style={{ width: '100%' }}
                   ></div>
                 )}
@@ -118,6 +103,7 @@ export default function TrackerPage() {
     </>
   );
 }
+
 
 
 

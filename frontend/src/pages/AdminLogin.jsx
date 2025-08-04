@@ -27,11 +27,20 @@ export default function AdminLogin() {
         />
         <button
           onClick={handleLogin}
-          className="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600"
+          className="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 mb-2"
         >
           Login
+        </button>
+
+        {/* NEW: Go to Menu Page Button */}
+        <button
+          onClick={() => navigate('/')}
+          className="bg-gray-200 text-gray-800 w-full py-2 rounded hover:bg-gray-300"
+        >
+          🍔 Go to Menu Page
         </button>
       </div>
     </div>
   );
 }
+

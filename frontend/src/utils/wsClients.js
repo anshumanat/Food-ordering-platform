@@ -6,6 +6,8 @@ export function connectWebSocket(onMessage) {
 
   socket.onopen = () => {
     console.log('✅ WebSocket connected');
+
+    socket.send(JSON.stringify({ type: 'ping' }));
   };
 
   socket.onmessage = (event) => {
