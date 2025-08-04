@@ -17,6 +17,10 @@ const getAnalytics = require('./controllers/getAnalytics');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+const compression = require('compression');
+app.use(compression());
+
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
