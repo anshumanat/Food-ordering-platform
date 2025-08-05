@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: foodie-backend
+    env: node
+    repo: https://github.com/anshumanat/Food-ordering-platform
+    branch: main
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: MONGO_URL
+        value: your_mongo_connection_url
+
+  - type: static
+    name: foodie-frontend
+    repo: https://github.com/anshumanat/Food-ordering-platform
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
