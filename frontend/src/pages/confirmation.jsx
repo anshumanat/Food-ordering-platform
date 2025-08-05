@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const orderId = location.state?.orderId;
+  const orderId = location.state?.orderId || localStorage.getItem('lastOrderId');
+
+  useEffect(() => {
+    // Store orderId in localStorage for refresh safety
+    if (location.state?.orderId) {
+      localStorage.setItem('lastOrderId', location.state.orderId);
+    }
+  }, [location.state]);
+
+  const handleTrackOrder = () => {
+    if (orderId) {
+      navigate(`/tracker/${orderId}`);
+    } else {
+      console.warn('⚠️ No order ID found.');
+    }
+  };
 
   return (
     <>
@@ -25,7 +40,7 @@ export default function ConfirmationPage() {
           </button>
 
           <button
-            onClick={() => navigate(`/tracker/${orderId}`)}
+            onClick={handleTrackOrder}
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded"
             disabled={!orderId}
           >

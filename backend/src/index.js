@@ -3,7 +3,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const http = require('http');
 const WebSocket = require('ws');
+// const path = require('path'); // Commented: used only for serving frontend
+const compression = require('compression');
 
+// RPC Controllers
 const getMenu = require('./controllers/getMenu');
 const placeOrderFactory = require('./controllers/placeOrder');
 const listOrders = require('./controllers/listOrders');
@@ -13,25 +16,30 @@ const acceptOrderFactory = require('./controllers/acceptOrder');
 const confirmPaymentFactory = require('./controllers/confirmPayment');
 const getAnalytics = require('./controllers/getAnalytics');
 
-
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const compression = require('compression');
+// Compress responses
 app.use(compression());
-
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Create HTTP server
+// Commented: Serving frontend static files
+// app.use(express.static(path.join(__dirname, '../public')));
+
+//Health check route
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
+
+// HTTP Server
 const server = http.createServer(app);
 
-// Create WebSocket server on /ws
+// WebSocket Server on /ws
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
-// Handle WebSocket connections
 wss.on('connection', (ws) => {
   console.log('📡 WebSocket client connected');
 
@@ -43,8 +51,6 @@ wss.on('connection', (ws) => {
       if (data.type === 'ping') {
         ws.send(JSON.stringify({ type: 'pong' }));
       }
-
-
     } catch (err) {
       console.error('❌ Invalid WebSocket message:', msg.toString());
     }
@@ -56,11 +62,11 @@ wss.on('connection', (ws) => {
   }));
 });
 
-
-// Inject wss into RPC handler factories
+// Inject WebSocket into RPC factories
 const placeOrder = placeOrderFactory(wss);
 const updateOrderStatus = updateOrderStatusFactory(wss);
 
+// RPC Handler
 app.post('/rpc', async (req, res) => {
   const { method, params, id } = req.body;
 
@@ -92,7 +98,6 @@ app.post('/rpc', async (req, res) => {
       case 'getAnalytics':
         result = await getAnalytics(params);
         break;
-
       default:
         return res.json({
           jsonrpc: '2.0',
@@ -121,10 +126,16 @@ app.post('/rpc', async (req, res) => {
   }
 });
 
-// Start the server
+// Commented: Fallback for React Router (SPA)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../public', 'index.html'));
+// });
+
+// Start server
 server.listen(PORT, () => {
   console.log(`🚀 Backend running on http://localhost:${PORT}`);
 });
+
 
 
 

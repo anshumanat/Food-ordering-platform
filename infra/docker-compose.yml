@@ -1,1 +1,9 @@
- 
+services:
+  foodie:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production

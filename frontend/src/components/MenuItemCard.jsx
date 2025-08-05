@@ -1,7 +1,6 @@
 export default function MenuItemCard({ item, onAdd, isFirstItem }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col items-center text-center gap-4 w-full max-w-[280px] h-[420px] mx-auto transform hover:scale-[1.02] transition-transform duration-200">
-      
+     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-5 flex flex-col items-center text-center gap-4 w-full max-w-[280px] h-[420px] mx-auto transform hover:scale-[1.02]">
       <div className="w-full h-[180px] rounded-xl overflow-hidden shadow-sm">
         <img
           loading={isFirstItem ? 'eager' : 'lazy'}
