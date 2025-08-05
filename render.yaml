@@ -11,8 +11,9 @@ services:
       - key: MONGO_URL
         value: your_mongo_connection_url
 
-  - type: static
+  - type: web
     name: foodie-frontend
+    env: static
     repo: https://github.com/anshumanat/Food-ordering-platform
     branch: main
     rootDir: frontend
