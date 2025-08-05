@@ -6,7 +6,7 @@
     import CheckoutPage from './pages/checkout'; 
     import { Toaster } from 'react-hot-toast';
     import ConfirmationPage from './pages/confirmation';
-    import TrackerPage from './pages/tracker/TrackerPage';
+    import TrackerPage from './pages/tracker/[id]';
     import AdminLogin from './pages/AdminLogin';
     import KitchenPage from './pages/kitchen/KitchenPage';
     import AnalyticsPage from './pages/AnalyticsPage';

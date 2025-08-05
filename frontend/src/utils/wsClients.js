@@ -2,7 +2,7 @@
 let socket;
 
 export function connectWebSocket(onMessage) {
-  socket = new WebSocket('ws://localhost:4000/ws');
+  socket = new WebSocket('https://foodie-1-o9h9.onrender.com');
 
   socket.onopen = () => {
     console.log('✅ WebSocket connected');
