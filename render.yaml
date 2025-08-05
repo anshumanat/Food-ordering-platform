@@ -18,4 +18,4 @@ services:
     branch: main
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: build
+    staticPublishPath: dist
