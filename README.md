@@ -82,7 +82,7 @@ analytics_update
 
 - 🎯 Backend (Render): https://foodie-1-o9h9.onrender.com
 - 🎥 Demo (Download): `demo/Demo-FoodieApp.mp4`
-- 📺 Demo (Google Drive): [Watch Video](https://drive.google.com/file/d/1B1l4SvwecBSfWC7aZqkT5EFj4vxgkzGq/view?usp=drive_link)
+- 📺 Demo (Google Drive): [Watch Video](https://drive.google.com/file/d/11-M6gn94w3oge9dAH5K0DZ6lA-YJMU1h/view?usp=drive_link)
 
 ---
 
