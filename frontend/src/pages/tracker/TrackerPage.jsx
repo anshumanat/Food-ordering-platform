@@ -31,7 +31,7 @@ export default function TrackerPage() {
   }, [id]);
 
   //  WebSocket real-time updates
-  useWebSocket('https://foodie-1-o9h9.onrender.com', {
+  useWebSocket('http://localhost:4000/rpc', {
     onMessage: (event) => {
       const msg = JSON.parse(event.data);
       if (

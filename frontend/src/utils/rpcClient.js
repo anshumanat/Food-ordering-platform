@@ -26,7 +26,7 @@ export async function rpcCall(
 
   while (attempt <= retries) {
     try {
-      const res = await fetch('https://foodie-1-o9h9.onrender.com', {
+      const res = await fetch('http://localhost:4000/rpc', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
