@@ -92,10 +92,10 @@ All UI, Lighthouse scores, Docker run, Postman, and final views are available in
 
 Examples:
 
-- `docs/ui-final-screens.png`
-- `docs/lighthouse-score.png`
-- `docs/docker-run-success.png`
-- `docs/postman-tests.png`
+- `docs/ui-final-screens`
+- `docs/lighthouse-score`
+- `docs/docker-run-success`
+- `docs/postman-tests`
 
 ---
 
@@ -136,8 +136,7 @@ However, for this project, the built-in React hooks were enough to cover all sta
 
 ## 🔍 Note for Reviewers
 
-I’m familiar with Redux Toolkit and Zustand, and I can implement either when the use case justifies it.  
-For this project, I intentionally kept things lightweight and simple.
+I’m familiar with Redux Toolkit and Zustand, and I can implement either when the use case justifies it. 
 
 ---
 
@@ -195,7 +194,6 @@ npx serve -s dist
 ## 🚧 Future Improvements (Optional)
 
 - ✅ Deploy working frontend with Vite via custom Docker or Netlify setup
-- 📱 Add mobile responsiveness and PWA support
 - 💳 Integrate real payment gateway (Stripe, Razorpay, etc.)
 - 📦 Pagination + filtering on order/admin lists
 
