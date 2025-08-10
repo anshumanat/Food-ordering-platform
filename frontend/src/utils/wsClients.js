@@ -1,19 +1,18 @@
- 
 let socket;
 
 export function connectWebSocket(onMessage) {
-  socket = new WebSocket('http://localhost:4000/rpc');
+  const wsUrl = import.meta.env.VITE_WS_URL;
+
+  socket = new WebSocket(`${wsUrl}/ws`);
 
   socket.onopen = () => {
     console.log('✅ WebSocket connected');
-
     socket.send(JSON.stringify({ type: 'ping' }));
   };
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log('📡 WS message:', data);
-
     if (onMessage) onMessage(data);
   };
 
@@ -25,9 +24,5 @@ export function connectWebSocket(onMessage) {
     console.error('WebSocket error:', err);
   };
 
-  return socket;
-}
-
-export function getSocket() {
   return socket;
 }

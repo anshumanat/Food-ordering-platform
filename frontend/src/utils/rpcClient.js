@@ -21,12 +21,14 @@ export async function rpcCall(
     id: Date.now(),
   };
 
+  const rpcUrl = import.meta.env.VITE_RPC_URL; // RPC URL variable
+
   let attempt = 0;
   let lastError;
 
   while (attempt <= retries) {
     try {
-      const res = await fetch('http://localhost:4000/rpc', {
+      const res = await fetch(`${rpcUrl}/rpc`, { // Use the variable here
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -49,7 +51,7 @@ export async function rpcCall(
       if (attempt === retries) throw lastError;
 
       attempt++;
-      await new Promise((r) => setTimeout(r, 300 * attempt)); // retry delay
+      await new Promise((r) => setTimeout(r, 300 * attempt)); // retrying delay
     }
   }
 

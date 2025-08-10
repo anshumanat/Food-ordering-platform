@@ -30,8 +30,11 @@ export default function TrackerPage() {
       });
   }, [id]);
 
-  //  WebSocket real-time updates
-  useWebSocket('http://localhost:4000/rpc', {
+  // Get the WebSocket URL from environment variables
+  const wsUrl = import.meta.env.VITE_WS_URL;
+
+  //  WebSocket real-time updates using the variable
+  useWebSocket(`${wsUrl}/ws`, {
     onMessage: (event) => {
       const msg = JSON.parse(event.data);
       if (
@@ -103,7 +106,6 @@ export default function TrackerPage() {
     </>
   );
 }
-
 
 
 
