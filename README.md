@@ -21,6 +21,7 @@ A full-stack food ordering platform with real-time order tracking and kitchen ma
 - 📋 Checkout form with validation
 - 📦 Order confirmation screen
 - 🚚 Real-time order tracking with live status updates (via WebSocket)
+- 📱 Fully Responsive Design: Ensures a seamless experience on all devices.
 
 ### Admin-Facing
 - 🧑‍🍳 Kitchen dashboard: real-time view of active orders
@@ -56,7 +57,9 @@ analytics_update
 
 ### 📋 Menu Page
 
-![Menu Page](docs/Final-UI-Screenshots/Menu.png.png)
+![Menu Page-Desktop](docs/Final-UI-Screenshots/Menu.png.png)
+![Menu Page-Mobile](docs/Final-UI-Screenshots/mobile-ss.jpg) ![Menu Page-Mobile](docs/Final-UI-Screenshots/mobile-pagess2.jpg.jpg)
+ 
 
 ### 📈 Analytics Dashboard
 
@@ -80,7 +83,9 @@ analytics_update
 
 ## 🔗 Deployment Links
 
-- 🎯 Backend (Render): https://foodie-1-o9h9.onrender.com
+## 🚀 Live Demo & API
+- 🖥️ **Live Frontend:** [https://foodie-frontend-m049.onrender.com/](https://foodie-frontend-m049.onrender.com/)
+- ⚙️ **Live Backend API:** [https://foodie-1-o9h9.onrender.com/health](https://foodie-1-o9h9.onrender.com/health)
 - 🎥 Demo (Download): `demo/Demo-FoodieApp.mp4`
 - 📺 Demo (Google Drive): [Watch Video](https://drive.google.com/file/d/11-M6gn94w3oge9dAH5K0DZ6lA-YJMU1h/view?usp=drive_link)
 
@@ -113,6 +118,7 @@ Examples:
 | Day 8   | Dockerize & GitHub Actions CI             | ✅ Done    |
 | Day 9   | Backend deployed on Render                | ✅ Done    |
 | Day 10  | Docs, Lighthouse, Final push & Demo video | ✅ Done    |
+| **Day 11** | **Finalize production deployment & fix environment issues** | **✅ Done** |
 
 ---
 
@@ -155,8 +161,8 @@ npm run dev
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Or to serve final build:
@@ -170,8 +176,8 @@ npx serve -s dist
 
 ## 📝 Notes
 
-- Backend deployed successfully to Render.
-- Frontend had deployment issues on both Render and Vercel due to vite permission problems. For now, demo recorded and attached instead.
+- Backend and frontedn both deployed successfully to Render.
+- The full-stack application is live on Render. The initial Vite deployment issues on the frontend were resolved by migrating the package manager from npm to pnpm, which provided a more reliable build process.
 - Docker setup partially worked — backend ran, but frontend build caused issues, so it's commented out in backend`src/index.js`.
 
 ---
@@ -193,7 +199,6 @@ npx serve -s dist
 
 ## 🚧 Future Improvements (Optional)
 
-- ✅ Deploy working frontend with Vite via custom Docker or Netlify setup
 - 💳 Integrate real payment gateway (Stripe, Razorpay, etc.)
 - 📦 Pagination + filtering on order/admin lists
 
