@@ -11,7 +11,7 @@
     "build": "tsc",
     "start": "node src/index.js",
     "migrate": "knex migrate:latest --env production",
-    "seed": "knex seed:run --env production"
+    "seed": "knex seed:run --env production"  
   },
   "keywords": [],
   "author": "",
