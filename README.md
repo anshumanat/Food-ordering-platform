@@ -55,18 +55,14 @@ analytics_update
 
 ## 🖼️ UI Preview
 
-### 📋 Menu Page
+| Menu Page | Cart Page |
+| :---: | :---: |
+| <img src="docs/Final-UI-Screenshots/Menu.png.png" alt="Menu Page" width="400"/> | <img src="docs/Final-UI-Screenshots/Cart.png.png" alt="Cart Page" width="400"/> |
 
-![Menu Page-Desktop](docs/Final-UI-Screenshots/Menu.png.png)
-![Menu Page-Mobile](docs/Final-UI-Screenshots/mobile-ss.jpg) ![Menu Page-Mobile](docs/Final-UI-Screenshots/mobile-pagess2.jpg.jpg)
- 
+| Analytics Dashboard | Mobile View |
+| :---: | :---: |
+| <img src="docs/Final-UI-Screenshots/Analytics1.png.png" alt="Analytics Page" width="400"/> | <img src="docs/Final-UI-Screenshots/mobile-ss.jpg" alt="Mobile Menu Page" width="400"/> |
 
-### 📈 Analytics Dashboard
-
-![Analytics Page](docs/Final-UI-Screenshots/Analytics1.png.png)
-
-### Cart Page
-![Cart Page](docs/Final-UI-Screenshots/Cart.png.png)
 
 ---
 
