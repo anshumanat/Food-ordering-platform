@@ -1,5 +1,4 @@
-// migrations/xxxx_create_orders_tables.js
-
+ 
 exports.up = function (knex) {
   return knex.schema
     .createTable('orders', (table) => {
