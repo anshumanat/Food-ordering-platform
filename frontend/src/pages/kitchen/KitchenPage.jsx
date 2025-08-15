@@ -7,54 +7,74 @@ export default function KitchenPage() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
 
+  // This new useEffect will sort the orders every time the list changes.
+  useEffect(() => {
+    setOrders(currentOrders => 
+      [...currentOrders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    );
+  }, [orders.length]); // It runs when the number of orders changes.
+
+
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
-    if (token !== 'admin123') {
-      navigate('/admin-login');
-    }
+    if (token !== 'admin123') navigate('/admin-login');
   }, [navigate]);
 
+  // initial load
   useEffect(() => {
     rpcCall('listOrders', {})
       .then((data) => {
-        const active = data?.filter((order) => order.status !== 'delivered');
-        setOrders(active || []);
+        const active = (data || []).filter((o) => o.status !== 'delivered');
+        setOrders(active);
       })
       .catch(console.error);
   }, []);
 
-  useWebSocket('ws://localhost:4000/ws', {
+  const wsUrl = import.meta.env.VITE_WS_URL;
+
+  useWebSocket(`${wsUrl}/ws`, {
     onMessage: (event) => {
       const msg = JSON.parse(event.data);
-      if (msg.type === 'order_created') {
-        setOrders((prev) => [...prev, msg.order]);
-      }
-      if (msg.type === 'order_updated') {
-        setOrders((prev) =>
-          prev.map((order) =>
-            order.id === msg.order.id ? msg.order : order
-          )
-        );
+      console.log('Kitchen WS Message Received:', msg); // For debugging
+
+      if (msg.type === 'order_created' || msg.type === 'order_updated') {
+        const incomingOrder = msg.order;
+        
+        setOrders(currentOrders => {
+          const existingOrderIndex = currentOrders.findIndex(o => o.id === incomingOrder.id);
+          let newOrders;
+
+          if (existingOrderIndex === -1) {
+            console.log('Adding new order to state:', incomingOrder);
+            newOrders = [...currentOrders, incomingOrder];
+          } else {
+            console.log('Updating existing order in state:', incomingOrder);
+            newOrders = currentOrders.map(order => 
+              order.id === incomingOrder.id ? incomingOrder : order
+            );
+          }
+          
+          return newOrders.filter(o => o.status !== 'delivered');
+        });
       }
     },
   });
 
-  const updateStatus = (orderId, status) => {
+  const updateStatus = (orderId, status) =>
     rpcCall('updateOrderStatus', { orderId, status }).catch(console.error);
-  };
 
-  const acceptOrder = (orderId) => {
+  const acceptOrder = (orderId) =>
     rpcCall('acceptOrder', { orderId }).catch(console.error);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     navigate('/admin-login');
   };
-
+ 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      {/* All your JSX for the header and table */}
+       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
           🍳 Kitchen Dashboard
         </h2>
@@ -112,6 +132,7 @@ export default function KitchenPage() {
                             ? 'bg-yellow-100 text-yellow-800'
                             : order.status === 'cooking'
                             ? 'bg-orange-100 text-orange-800'
+                            // ... rest of the styles
                             : order.status === 'out_for_delivery'
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-green-100 text-green-800'
@@ -151,6 +172,7 @@ export default function KitchenPage() {
           <div className="sm:hidden space-y-4">
             {orders.map((order) => (
               <div key={order.id} className="bg-white rounded-lg shadow p-4 space-y-2">
+                {/* ... rest of the mobile view JSX */}
                 <div className="flex justify-between">
                   <span className="font-bold text-gray-800">Order #{order.id}</span>
                   <span
